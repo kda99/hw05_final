@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 from .models import Post, Group, Comment, Follow
 from .forms import PostForm, CommentForm
@@ -117,10 +118,10 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     # Подписаться на автора
-    ...
+    return HttpResponse()
 
 @login_required
 def profile_unfollow(request, username):
     # Дизлайк, отписка
-    ...
+    return HttpResponse()
 
