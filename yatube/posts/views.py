@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
-from .models import Post, Group, Comment
+from .models import Post, Group, Comment, Follow
 from .forms import PostForm, CommentForm
 from .utils import my_paginator
 
@@ -100,3 +100,27 @@ def add_comment(request, post_id):
         comment.post = post
         comment.save()
     return redirect('posts:post_detail', post_id=post_id)
+
+# posts/views.py
+
+@login_required
+def follow_index(request):
+    # информация о текущем пользователе доступна в переменной request.user
+    # ...
+    if request.user.is_authenticated:
+        following = Follow.objects.filter(user = request.user, author = request.post.author).exists()
+    else:
+        following = False
+    context = {'following': following}
+    return render(request, 'posts/follow.html', context)
+
+@login_required
+def profile_follow(request, username):
+    # Подписаться на автора
+    ...
+
+@login_required
+def profile_unfollow(request, username):
+    # Дизлайк, отписка
+    ...
+

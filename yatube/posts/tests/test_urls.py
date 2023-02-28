@@ -45,6 +45,8 @@ class PostModelTest(TestCase):
             reverse('posts:post_detail', kwargs={'post_id': self.post.pk}):
                 'posts/post_detail.html',
             POST_CREATE: 'posts/create_post.html',
+            '/1': 'core/404.html',
+            f'posts/{self.group.slug}/edit': 'core/403csrf.html',
         }
 
         for address, template in templates_url_names.items():
