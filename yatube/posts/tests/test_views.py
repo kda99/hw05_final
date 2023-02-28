@@ -1,4 +1,3 @@
-import shutil
 import tempfile
 
 from django.test import Client, TestCase, override_settings
@@ -14,6 +13,7 @@ GROUP_LIST = reverse('posts:group_list', kwargs={'slug': 'test-slug'})
 POST_CREATE = reverse('posts:post_create')
 PAGE_IN_PAGINATOR = 10
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostsPagesTests(TestCase):
@@ -84,7 +84,7 @@ class PostsPagesTests(TestCase):
         self.assertEqual(post_text_0, self.post.pk)
         self.assertEqual(post_author_0, self.author)
         self.assertEqual(post_group_0, self.group)
-        self.assertEqual(post_image_0,  'posts/small.gif')
+        self.assertEqual(post_image_0, 'posts/small.gif')
 
     def test_post_profile_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
@@ -97,7 +97,7 @@ class PostsPagesTests(TestCase):
         self.assertEqual(post_text_0, self.post.pk)
         self.assertEqual(post_author_0, self.author)
         self.assertEqual(post_group_0, self.group)
-        self.assertEqual(post_image_0,  'posts/small.gif')
+        self.assertEqual(post_image_0, 'posts/small.gif')
 
     def test_index_page_show_correct_context(self):
         """Шаблон index сформирован с правильным контекстом."""
@@ -110,7 +110,7 @@ class PostsPagesTests(TestCase):
         self.assertEqual(post_text_0, self.post.pk)
         self.assertEqual(post_author_0, self.author)
         self.assertEqual(post_group_0, self.group)
-        self.assertEqual(post_image_0,  'posts/small.gif')
+        self.assertEqual(post_image_0, 'posts/small.gif')
 
     def test_post_another_group(self):
         another_group = Group.objects.create(

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
-from .models import Post, Group, Comment, Follow
+from .models import Post, Group, Follow
 from .forms import PostForm, CommentForm
 from .utils import my_paginator
 
@@ -91,6 +91,7 @@ def post_edit(request, post_id):
         return redirect('posts:post_detail', post_id=post_id)
     return render(request, 'posts/create_post.html', context)
 
+
 @login_required
 def add_comment(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -102,26 +103,32 @@ def add_comment(request, post_id):
         comment.save()
     return redirect('posts:post_detail', post_id=post_id)
 
-# posts/views.py
 
 @login_required
 def follow_index(request):
     # информация о текущем пользователе доступна в переменной request.user
     # ...
     if request.user.is_authenticated:
-        following = Follow.objects.filter(user = request.user, author = request.post.author).exists()
+        following = Follow.objects.filter(user=request.user,
+                                          author=request.post.author).exists()
     else:
         following = False
     context = {'following': following}
     return render(request, 'posts/follow.html', context)
 
+
 @login_required
 def profile_follow(request, username):
-    # Подписаться на автора
-    return HttpResponse()
+    author = get_object_or_404(User, username=username)
+    user = request.user
+    if not Follow.objects.filter(author=author, user=user, ).exists() and\
+            author != user:
+        Follow.objects.create(author=author, user=user)
+        return redirect('posts:profile', username=author)
+    return redirect('posts:profile', username=author)
+
 
 @login_required
 def profile_unfollow(request, username):
     # Дизлайк, отписка
     return HttpResponse()
-
