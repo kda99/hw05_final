@@ -110,7 +110,7 @@ class PostsPagesTests(TestCase):
         self.assertEqual(post_text_0, self.post.pk)
         self.assertEqual(post_author_0, self.author)
         self.assertEqual(post_group_0, self.group)
-        self.assertEqual(post_image_0, 'posts/small.gif')
+        self.assertEqual(post_image_0,  'posts/small.gif')
 
     def test_post_another_group(self):
         another_group = Group.objects.create(
