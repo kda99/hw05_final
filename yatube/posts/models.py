@@ -8,9 +8,16 @@ User = get_user_model()
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(
+        max_length=200,
+        verbose_name='Группа',
+    )
     slug = models.SlugField(unique=True)
     description = models.TextField()
+
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
 
     def __str__(self):
         return self.title
@@ -19,17 +26,17 @@ class Group(models.Model):
 class Post(CreatedModel):
     text = models.TextField(
         'Текст поста',
-        help_text='Введите текст поста'
+        help_text='Введите текст поста',
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
         auto_now_add=True,
-        db_index=True
+        db_index=True,
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Автор'
+        verbose_name='Автор',
     )
     group = models.ForeignKey(
         Group,
@@ -38,16 +45,13 @@ class Post(CreatedModel):
         blank=True,
         null=True,
         verbose_name='Группа',
-        help_text='Выберите группу'
     )
-    # Поле для картинки (необязательное)
     image = models.ImageField(
         'Картинка',
         upload_to='posts/',
-        blank=True
+        blank=True,
     )
-    # Аргумент upload_to указывает директорию,
-    # в которую будут загружаться пользовательские файлы.
+
 
     class Meta:
         ordering = ('-pub_date',)
@@ -66,7 +70,7 @@ class Comment(models.Model):
         blank=True,
         null=True,
         verbose_name='Коментарий',
-        help_text='Выберите коментарий'
+        help_text='Выберите коментарий',
     )
     author = models.ForeignKey(
         User,
@@ -80,8 +84,12 @@ class Comment(models.Model):
     )
     created = models.DateTimeField(
         'Дата комментария',
-        auto_now_add=True
+        auto_now_add=True,
     )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
 
 class Follow(models.Model):
@@ -97,3 +105,8 @@ class Follow(models.Model):
         verbose_name='Автор в подписке',
         related_name='following',
     )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
