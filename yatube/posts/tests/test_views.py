@@ -14,13 +14,13 @@ POST_CREATE = reverse('posts:post_create')
 PAGE_IN_PAGINATOR = 10
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
+    b'\x47\x49\x46\x38\x39\x61\x02\x00'
+    b'\x01\x00\x80\x00\x00\x00\x00\x00'
+    b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+    b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+    b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+    b'\x0A\x00\x3B'
+)
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
@@ -73,14 +73,12 @@ class PostsPagesTests(TestCase):
             reverse('posts:post_edit', kwargs={'post_id': self.post.pk}))
         self.assert_form_context(response)
 
-
     def assert_page_context(self, response):
         first_object = response.context['page_obj'][0]
         self.assertEqual(first_object.id, self.post.pk)
         self.assertEqual(first_object.author, self.author)
         self.assertEqual(first_object.group, self.group)
         self.assertEqual(first_object.image, 'posts/small.gif')
-
 
     def test_post_group_list_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""
