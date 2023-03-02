@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from posts.models import Group, Post, User
 
@@ -18,10 +19,24 @@ class PostFormTest(TestCase):
             description='test_description',
             slug='test-slug'
         )
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
+        )
+        cls.uploaded = SimpleUploadedFile(
+            name='small.gif',
+            content=small_gif,
+            content_type='image/gif'
+        )
         cls.post = Post.objects.create(
             text='test_post',
             author=cls.author,
-            group=cls.group
+            group=cls.group,
+            image=cls.uploaded,
         )
 
     def setUp(self):
@@ -37,12 +52,13 @@ class PostFormTest(TestCase):
         form_data = {
             'text': 'Тестовый текст',
             'group': self.group.id,
+            'image': self.uploaded
         }
 
         response = self.anonim_client.post(
             POST_CREATE,
             data=form_data,
-            follow=True
+            follow=True,
         )
 
         self.assertEqual(Post.objects.count(), posts_count)
@@ -55,6 +71,7 @@ class PostFormTest(TestCase):
         form_data = {
             'text': 'Тестовый текст',
             'group': self.group.id,
+
         }
 
         response = self.authorized_client.post(
