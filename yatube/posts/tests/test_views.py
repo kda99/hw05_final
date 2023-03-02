@@ -13,6 +13,14 @@ GROUP_LIST = reverse('posts:group_list', kwargs={'slug': 'test-slug'})
 POST_CREATE = reverse('posts:post_create')
 PAGE_IN_PAGINATOR = 10
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
+        )
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
@@ -25,14 +33,6 @@ class PostsPagesTests(TestCase):
             title='test_title',
             description='test_description',
             slug='test-slug'
-        )
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
         )
         cls.uploaded = SimpleUploadedFile(
             name='small.gif',
@@ -73,44 +73,30 @@ class PostsPagesTests(TestCase):
             reverse('posts:post_edit', kwargs={'post_id': self.post.pk}))
         self.assert_form_context(response)
 
+
+    def assert_page_context(self, response):
+        first_object = response.context['page_obj'][0]
+        self.assertEqual(first_object.id, self.post.pk)
+        self.assertEqual(first_object.author, self.author)
+        self.assertEqual(first_object.group, self.group)
+        self.assertEqual(first_object.image, 'posts/small.gif')
+
+
     def test_post_group_list_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""
         response = self.authorized_author.get(GROUP_LIST)
-        first_object = response.context['page_obj'][0]
-        post_text_0 = first_object.id
-        post_author_0 = first_object.author
-        post_group_0 = first_object.group
-        post_image_0 = first_object.image
-        self.assertEqual(post_text_0, self.post.pk)
-        self.assertEqual(post_author_0, self.author)
-        self.assertEqual(post_group_0, self.group)
-        self.assertEqual(post_image_0, 'posts/small.gif')
+        self.assert_page_context(response)
 
     def test_post_profile_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
         response = self.authorized_author.get(GROUP_LIST)
         first_object = response.context['page_obj'][0]
-        post_text_0 = first_object.id
-        post_author_0 = first_object.author
-        post_group_0 = first_object.group
-        post_image_0 = first_object.image
-        self.assertEqual(post_text_0, self.post.pk)
-        self.assertEqual(post_author_0, self.author)
-        self.assertEqual(post_group_0, self.group)
-        self.assertEqual(post_image_0, 'posts/small.gif')
+        self.assert_page_context(response)
 
     def test_index_page_show_correct_context(self):
         """Шаблон index сформирован с правильным контекстом."""
         response = self.authorized_author.get(INDEX)
-        first_object = response.context['page_obj'][0]
-        post_text_0 = first_object.id
-        post_author_0 = first_object.author
-        post_group_0 = first_object.group
-        post_image_0 = first_object.image
-        self.assertEqual(post_text_0, self.post.pk)
-        self.assertEqual(post_author_0, self.author)
-        self.assertEqual(post_group_0, self.group)
-        self.assertEqual(post_image_0, 'posts/small.gif')
+        self.assert_page_context(response)
 
     def test_post_another_group(self):
         another_group = Group.objects.create(
