@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.core.cache import cache
 
 from ..models import Group, Post, User
 
@@ -25,7 +26,7 @@ class PostModelTest(TestCase):
         cls.user = User.objects.create_user(username='HasNoName')
 
     def setUp(self):
-        # Создаем неавторизованный клиент
+        cache.clear()
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client_author = Client()

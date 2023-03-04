@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django import forms
+from django.core.cache import cache
 
 from posts.models import Group, Post, User
 
@@ -47,6 +48,7 @@ class PostsPagesTests(TestCase):
         )
 
     def setUp(self):
+        cache.clear()
         self.authorized_author = Client()
         self.authorized_author.force_login(self.author)
 
