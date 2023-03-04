@@ -47,11 +47,22 @@ class PostModelTest(TestCase):
                 'posts/post_detail.html',
             POST_CREATE: 'posts/create_post.html',
             '/1': 'core/404.html',
+            # reverse('posts:add_comment', kwargs={'post_id': self.post.pk}): 'posts/post_detail.html',
+            reverse('posts:follow_index', None): 'posts/follow.html',
+            # reverse('posts:profile_follow', kwargs={'username': self.author.username}):
+            #     'posts/profile.html',
+            # reverse('posts:profile_unfollow', kwargs={'username': self.author.username}):
+            #     'posts/profile.html',
         }
 
         for address, template in templates_url_names.items():
             if address not in (reverse('posts:post_edit', kwargs={
-                    'post_id': self.post.pk}), POST_CREATE):
+                    'post_id': self.post.pk}), reverse('posts:profile_follow',
+                    kwargs={'username': self.author.username}), reverse(
+                'posts:follow_index', None),reverse('posts:add_comment',
+                    kwargs={'post_id': self.post.pk}), reverse(
+                'posts:profile_unfollow', kwargs={'username':
+                    self.author.username}), POST_CREATE):
                 with self.subTest(address=address):
                     response = self.guest_client.get(address)
                     self.assertTemplateUsed(response, template)
