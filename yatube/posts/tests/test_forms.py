@@ -4,7 +4,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from posts.models import Group, Post, User
+from posts.models import Group, Post, User, Comment, Follow
 
 POST_CREATE = reverse('posts:post_create')
 
@@ -133,3 +133,15 @@ class PostFormTest(TestCase):
 
         self.assertEqual(last_post.text, form_data['text'])
         self.assertEqual(last_post.author, self.author)
+
+
+# class PostFormTest(TestCase):
+#     @classmethod
+#     def setUpClass(cls):
+#         super().setUpClass()
+#         cls.author = User.objects.create_user(username='NoName')
+#         cls.group = Group.objects.create(
+#             title='test_title',
+#             description='test_description',
+#             slug='test-slug'
+#         )
