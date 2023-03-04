@@ -8,7 +8,6 @@ from django.core.cache import cache
 from posts.models import Group, Post, User, Comment, Follow
 
 POST_CREATE = reverse('posts:post_create')
-# POST_DETAIL = reverse('posts:post_detail', kwargs={'post_id': self.post.pk})
 small_gif = (
     b'\x47\x49\x46\x38\x39\x61\x02\x00'
     b'\x01\x00\x80\x00\x00\x00\x00\x00'
@@ -40,6 +39,7 @@ class PostFormTest(TestCase):
             group=cls.group,
             image=cls.uploaded,
         )
+        cls.POST_EDIT = reverse('posts:post_edit', args=({cls.post.id}))
 
     def setUp(self):
         cache.clear()
@@ -94,14 +94,13 @@ class PostFormTest(TestCase):
     def test_edit_post_anonim(self):
         """аноним не может отредактировать пост"""
         posts_count = Post.objects.count()
-        POST_EDIT = reverse('posts:post_edit', args=({self.post.id}))
         form_data = {
             'text': 'Отредактированный текст',
             'group': self.group.id,
         }
 
         self.anonim_client.post(
-            POST_EDIT,
+            self.POST_EDIT,
             data=form_data,
             follow=True
         )
@@ -113,21 +112,20 @@ class PostFormTest(TestCase):
     def test_edit_post(self):
         """Валидная форма редактирует пост"""
         posts_count = Post.objects.count()
-        POST_EDIT = reverse('posts:post_edit', args=({self.post.id}))
+        POST_DETAIL = reverse("posts:post_detail", kwargs={"post_id": self.post.id})
         form_data = {
             'text': 'Отредактированный текст',
             'group': self.group.id,
         }
 
         response = self.authorized_client.post(
-            POST_EDIT,
+            self.POST_EDIT,
             data=form_data,
             follow=True
         )
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertRedirects(response, reverse(
-            "posts:post_detail", kwargs={"post_id": self.post.id}))
+        self.assertRedirects(response, POST_DETAIL)
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertTrue(Post.objects.filter(
             text='Отредактированный текст').count())
@@ -143,7 +141,6 @@ class CommentFormTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.author_post = User.objects.create_user(username='author_post')
-        # cls.author_comment = User.objects.create_user(username='author_comment')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='Тестовый слаг',
@@ -153,11 +150,7 @@ class CommentFormTest(TestCase):
             author=cls.author_post,
             text='Тестовый пост',
         )
-        # cls.comment = Comment.objects.create(
-        #     post=cls.post,
-        #     author=cls.author_comment,
-        #     text='Тестовый комментарий',
-        # )
+        cls.ADD_COMMENT = reverse('posts:add_comment', kwargs={'post_id': cls.post.pk})
 
     def setUp(self):
         cache.clear()
@@ -175,7 +168,7 @@ class CommentFormTest(TestCase):
         }
 
         response = self.anonim_client.post(
-            reverse('posts:add_comment', kwargs={'post_id': self.post.pk}),
+            self.ADD_COMMENT,
             data=form_data,
             follow=True,
         )
@@ -191,7 +184,7 @@ class CommentFormTest(TestCase):
             'text': 'Тестовый текст комментария',
         }
         response = self.authorized_client.post(
-            reverse('posts:add_comment', kwargs={'post_id': self.post.pk}),
+            self.ADD_COMMENT,
             data=form_data,
             follow=True,
         )

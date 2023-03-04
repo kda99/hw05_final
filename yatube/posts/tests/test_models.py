@@ -45,7 +45,8 @@ class CommentModelTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
-        cls.author_comment = User.objects.create_user(username='author_comment')
+        cls.author_comment = User.objects.create_user(
+            username='author_comment')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='Тестовый слаг',
