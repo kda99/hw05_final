@@ -35,14 +35,20 @@ class PostModelTest(TestCase):
 
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
-        GROUP_LIST = reverse('posts:group_list', kwargs={'slug': self.group.slug})
+        GROUP_LIST = reverse('posts:group_list',
+                             kwargs={'slug': self.group.slug})
         PROFILE = reverse('posts:profile', kwargs={'username': self.author})
-        POST_EDIT = reverse('posts:post_edit', kwargs={'post_id': self.post.pk})
-        POST_DETAIL = reverse('posts:post_detail', kwargs={'post_id': self.post.pk})
+        POST_EDIT = reverse('posts:post_edit',
+                            kwargs={'post_id': self.post.pk})
+        POST_DETAIL = reverse('posts:post_detail',
+                              kwargs={'post_id': self.post.pk})
         FOLLOW_INDEX = reverse('posts:follow_index', None)
-        ADD_COMMENT = reverse('posts:add_comment', kwargs={'post_id': self.post.pk})
-        PROFILE_FOLLOW = reverse('posts:profile_follow', kwargs={'username': self.author.username})
-        PROFILE_UNFOLLOW = reverse('posts:profile_unfollow', kwargs={'username': self.author.username})
+        ADD_COMMENT = reverse('posts:add_comment',
+                              kwargs={'post_id': self.post.pk})
+        PROFILE_FOLLOW = reverse('posts:profile_follow',
+                                 kwargs={'username': self.author.username})
+        PROFILE_UNFOLLOW = reverse('posts:profile_unfollow',
+                                   kwargs={'username': self.author.username})
         templates_url_names = {
             INDEX: 'posts/index.html',
             GROUP_LIST: 'posts/group_list.html',
@@ -51,10 +57,7 @@ class PostModelTest(TestCase):
             POST_DETAIL: 'posts/post_detail.html',
             POST_CREATE: 'posts/create_post.html',
             '/1': 'core/404.html',
-            ADD_COMMENT: redirect('posts:profile', username=self.author.username),
             FOLLOW_INDEX: 'posts/follow.html',
-            PROFILE_FOLLOW: redirect('posts:profile', username=author),
-            PROFILE_UNFOLLOW: redirect('posts:profile', username=author),
         }
 
         for address, template in templates_url_names.items():
@@ -78,3 +81,19 @@ class PostModelTest(TestCase):
             with self.subTest(address=address):
                 response = self.authorized_client_author.get(address)
                 self.assertTemplateUsed(response, template)
+
+        templates_url_names_redirect = {
+            ADD_COMMENT: f'/posts/{self.post.pk}/',
+            PROFILE_FOLLOW: f'/profile/{self.post.author}/',
+            PROFILE_UNFOLLOW: f'/profile/{self.post.author}/',
+        }
+
+        for address, template in templates_url_names_redirect.items():
+            with self.subTest(address=address):
+                response = self.authorized_client.get(address)
+                self.assertRedirects(response, template, status_code=302)
+
+        for address, template in templates_url_names_redirect.items():
+            with self.subTest(address=address):
+                response = self.authorized_client_author.get(address)
+                self.assertRedirects(response, template, status_code=302)

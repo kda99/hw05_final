@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.cache import cache
 
-from posts.models import Group, Post, User, Comment, Follow
+from posts.models import Group, Post, User, Comment
 
 POST_CREATE = reverse('posts:post_create')
 small_gif = (
@@ -112,7 +112,8 @@ class PostFormTest(TestCase):
     def test_edit_post(self):
         """Валидная форма редактирует пост"""
         posts_count = Post.objects.count()
-        POST_DETAIL = reverse("posts:post_detail", kwargs={"post_id": self.post.id})
+        POST_DETAIL = reverse("posts:post_detail",
+                              kwargs={"post_id": self.post.id})
         form_data = {
             'text': 'Отредактированный текст',
             'group': self.group.id,
@@ -150,7 +151,8 @@ class CommentFormTest(TestCase):
             author=cls.author_post,
             text='Тестовый пост',
         )
-        cls.ADD_COMMENT = reverse('posts:add_comment', kwargs={'post_id': cls.post.pk})
+        cls.ADD_COMMENT = reverse('posts:add_comment',
+                                  kwargs={'post_id': cls.post.pk})
 
     def setUp(self):
         cache.clear()
@@ -194,4 +196,3 @@ class CommentFormTest(TestCase):
         last_comment = Comment.objects.order_by('-id')[0]
         self.assertEqual(last_comment.text, form_data['text'])
         self.assertEqual(last_comment.author, self.user)
-

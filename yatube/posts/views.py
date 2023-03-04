@@ -30,8 +30,9 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.all().filter(author__exact=author)
     page_obj = my_paginator(request, post_list)
-    following = (request.user.is_authenticated and request.user != author and
-                 Follow.objects.filter(author=author, user=request.user))
+    following = (request.user.is_authenticated
+                 and request.user != author
+                 and Follow.objects.filter(author=author, user=request.user))
     context = {
         'author': author,
         'page_obj': page_obj,
@@ -112,7 +113,7 @@ def follow_index(request):
         following = False
     post_list = Post.objects.filter(author__following__user=request.user)
     page_obj = my_paginator(request, post_list)
-    context = {'page_obj': page_obj, }
+    context = {'page_obj': page_obj, 'following': following}
     return render(request, 'posts/follow.html', context)
 
 

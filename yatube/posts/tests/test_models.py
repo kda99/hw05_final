@@ -65,7 +65,8 @@ class CommentModelTest(TestCase):
     def test_verbose_name(self):
         comment = CommentModelTest.comment
         self.assertEqual(comment._meta.get_field('text').verbose_name,
-        'Текст комментария', 'некорректно работает verbose_name Comment')
+                         'Текст комментария', 'некорректно работает'
+                                              ' verbose_name Comment')
 
     def test_help_text(self):
         comment = CommentModelTest.comment
@@ -96,10 +97,10 @@ class FollowModelTest(TestCase):
 
     def test_verbose_name(self):
         follow = FollowModelTest.follow
-        self.assertEqual(follow._meta.verbose_name,
-        'Подписка', 'некорректно работает verbose_name Follow')
+        self.assertEqual(follow._meta.verbose_name, 'Подписка',
+                         'некорректно работает verbose_name Follow')
 
     def test_verbose_name_plural(self):
         follow = FollowModelTest.follow
-        self.assertEqual(follow._meta.verbose_name_plural,
-        'Подписки', 'некорректно работает verbose_name Follow')
+        self.assertEqual(follow._meta.verbose_name_plural, 'Подписки',
+                         'некорректно работает verbose_name Follow')

@@ -71,7 +71,8 @@ class PostsPagesTests(TestCase):
 
     def test_post_edit_page_show_correct_context(self):
         """Шаблон post_edit сформирован с правильным контекстом."""
-        POST_EDIT = reverse('posts:post_edit', kwargs={'post_id': self.post.pk})
+        POST_EDIT = reverse('posts:post_edit',
+                            kwargs={'post_id': self.post.pk})
         response = self.authorized_author.get(POST_EDIT)
         self.assert_form_context(response)
 
@@ -131,7 +132,8 @@ class PaginatorViewsTest(TestCase):
                 text=f'text{post_temp}', author=cls.author, group=cls.group
             )
 
-        cls.PROFILE = reverse('posts:profile', kwargs={'username': cls.author.username})
+        cls.PROFILE = reverse('posts:profile',
+                              kwargs={'username': cls.author.username})
 
     def test_first_page_contains_ten_records(self):
         templates_pages_names = {
