@@ -71,8 +71,8 @@ class PostsPagesTests(TestCase):
 
     def test_post_edit_page_show_correct_context(self):
         """Шаблон post_edit сформирован с правильным контекстом."""
-        response = self.authorized_author.get(
-            reverse('posts:post_edit', kwargs={'post_id': self.post.pk}))
+        POST_EDIT = reverse('posts:post_edit', kwargs={'post_id': self.post.pk})
+        response = self.authorized_author.get(POST_EDIT)
         self.assert_form_context(response)
 
     def assert_page_context(self, response):
@@ -129,13 +129,13 @@ class PaginatorViewsTest(TestCase):
                 text=f'text{post_temp}', author=cls.author, group=cls.group
             )
 
+        cls.PROFILE = reverse('posts:profile', kwargs={'username': cls.author.username})
+
     def test_first_page_contains_ten_records(self):
         templates_pages_names = {
             'posts/index.html': INDEX,
-            'posts/group_list.html':
-                reverse('posts:group_list', kwargs={'slug': self.group.slug}),
-            'posts/profile.html':
-                reverse('posts:profile', kwargs={'username': self.author}),
+            'posts/group_list.html': GROUP_LIST,
+            'posts/profile.html': self.PROFILE,
         }
         for template, reverse_name in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
@@ -147,12 +147,8 @@ class PaginatorViewsTest(TestCase):
     def test_second_page_contains_three_records(self):
         templates_pages_names = {
             'posts/index.html': INDEX + '?page=2',
-            'posts/group_list.html':
-                reverse('posts:group_list',
-                        kwargs={'slug': self.group.slug}) + '?page=2',
-            'posts/profile.html':
-                reverse('posts:profile',
-                        kwargs={'username': self.author}) + '?page=2',
+            'posts/group_list.html': GROUP_LIST + '?page=2',
+            'posts/profile.html': self.PROFILE + '?page=2',
         }
         for template, reverse_name in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
