@@ -86,6 +86,8 @@ class PostsPagesTests(TestCase):
         """Шаблон group_list сформирован с правильным контекстом."""
         response = self.authorized_author.get(GROUP_LIST)
         self.assert_page_context(response)
+        first_object = response.context['page_obj'][0]
+        self.assertEqual(first_object.group.title, self.group.title)
 
     def test_post_profile_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""

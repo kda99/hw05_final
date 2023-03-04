@@ -26,7 +26,7 @@ def group_posts(request, slug):
     return render(request, 'posts/group_list.html', context)
 
 
-def profile(request, username, following=False):
+def profile(request, username):
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.all().filter(author__exact=author)
     page_obj = my_paginator(request, post_list)
@@ -104,8 +104,6 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    # информация о текущем пользователе доступна в переменной request.user
-    # ...
     profile = User.objects.get(username=request.user.username)
     if request.user.is_authenticated:
         following = Follow.objects.filter(user=request.user,
@@ -114,7 +112,7 @@ def follow_index(request):
         following = False
     post_list = Post.objects.filter(author__following__user=request.user)
     page_obj = my_paginator(request, post_list)
-    context = {'page_obj': page_obj, 'following': following}
+    context = {'page_obj': page_obj, }
     return render(request, 'posts/follow.html', context)
 
 

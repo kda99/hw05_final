@@ -4,7 +4,7 @@ from django.core.cache import cache
 
 from ..models import Group, Post, User
 
-INDEX = reverse('posts:index', None)
+INDEX = reverse('posts:index')
 POST_CREATE = reverse('posts:post_create')
 
 
